@@ -1,0 +1,111 @@
+<ion-header-bar align-title="center" class="bar-positive">
+    <h1 class="title">Product Dashboard</h1>
+</ion-header-bar>
+
+<ion-view view-title="ProductDashboard">
+    <ion-content>
+
+        <div class="row">
+            <div class="col col-50 list card cardpadding">
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3 alt="{{product.fn}}">
+                        <b>Product Description</b>
+                    </h3>
+                </div>
+                <div class="item item-body imagepadding">
+                    <h3 alt="{{product.fn}}">
+                        <b>{{product.name}}</b>
+                    </h3>
+                    <h4>{{product.summary}}</h4>
+                    <img class="full-image"
+                         style="display: block; margin-left: auto; margin-right: auto; width: auto; height: 165px"
+                         src="{{product.image}}">
+
+                    <div>
+                        <h3>{{product.description}}</h3>
+                    </div>
+                </div>
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3 alt="{{product.fn}}">
+                        <b>Product Sentiment
+                    </h3>
+                </div>
+                <div class="item tabs tabs-secondary">
+                    <rating align="center" ng-model="stars" max="max"></rating>
+                </div>
+                <div class="item tabs tabs-secondary">
+                    <div class="sentiment-center">
+                        <a href="#" class="subdued">{{product.likes}}<i
+                                class="icon ion-happy-outline sentiment"></i></a> <a href="#"
+                                                                                     class="subdued">{{product.dislikes}}<i
+                            class="icon ion-sad-outline sentiment"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col col-50 list card cardpadding">
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3>
+                        <b>Interactions Map</b>
+                    </h3>
+                </div>
+
+                <div class="item item-body">
+                    <highchart id="chart2" config="interactionsMapConfig"></highchart>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col list card cardpadding">
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3 alt="{{product.fn}}">
+                        <b>Product interactions
+                    </h3>
+                </div>
+
+                <div class="item item-body">
+                    <highchart id="chart1" config="interactionChartConfig"></highchart>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-25 list card cardpadding">
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3 alt="{{product.fn}}">
+                        <b>Price</b>
+                    </h3>
+                </div>
+                <div class="item tabs tabs-secondary">
+                    <label class="item item-input"> <i
+                            class="icon ion-social-euro placeholder-icon"></i> <input
+                            type="text" ng-model="product.price">
+                    </label>
+                </div>
+                <div class="item tabs tabs-secondary tabs-icon-left item-divider">
+                    <a class="tab-item" ng-click="updatePrice()" href="#"> <i
+                            class="icon ion-edit"></i>Update
+                    </a>
+                </div>
+            </div>
+            <div class="col col-75 list card cardpadding">
+                <div class="item item-text-wrap headerpadding"
+                     style="background-color: #f5f5f5;" href="#">
+                    <h3 alt="{{product.fn}}">
+                        <b>Product evolution</b>
+                    </h3>
+                </div>
+                <div class="item item-body">
+                    <highchart id="chart3" config="priceChartConfig"></highchart>
+                </div>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-view>

@@ -1,0 +1,354 @@
+[
+  {
+    "id": "9eca7ad7.613588",
+    "type": "http in",
+    "name": "Interactions Endpoint",
+    "url": "/interactions",
+    "method": "post",
+    "x": 217,
+    "y": 83,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "f8470a70.07b8f8"
+      ]
+    ]
+  },
+  {
+    "id": "79ddd6da.862228",
+    "type": "function",
+    "name": "Get Scans",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/scans\";\n \nreturn msg;",
+    "outputs": "1",
+    "valid": true,
+    "x": 452.9286117553711,
+    "y": 197.75003814697266,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "f6a504b5.095af8"
+      ]
+    ]
+  },
+  {
+    "id": "f6a504b5.095af8",
+    "type": "http request",
+    "name": "Scans History",
+    "method": "GET",
+    "url": "",
+    "x": 635.4285659790039,
+    "y": 197.0000081062317,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "6b7a2f4f.9485d"
+      ]
+    ]
+  },
+  {
+    "id": "3a6c3770.c593c8",
+    "type": "http request",
+    "name": "Checkins History",
+    "method": "GET",
+    "url": "",
+    "x": 635.1786041259766,
+    "y": 299.7500057220459,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "8af004cc.750ff8"
+      ]
+    ]
+  },
+  {
+    "id": "e643bf98.19bc4",
+    "type": "debug",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 1171.9840087890625,
+    "y": 654.0555572509766,
+    "z": "b27eb30.f4d815",
+    "wires": []
+  },
+  {
+    "id": "52dc349d.ad23cc",
+    "type": "http response",
+    "name": "",
+    "x": 1122.567611694336,
+    "y": 885.555585861206,
+    "z": "b27eb30.f4d815",
+    "wires": []
+  },
+  {
+    "id": "1e15079.fe1eaf8",
+    "type": "function",
+    "name": "Merge Interactions",
+    "func": "var data = JSON.parse(context.global.scans);\nvar formattedScans = [];\ndata.data.forEach(function(item){                \n\tformattedScans.push([item.lastUpdate,1]);                   \t                \n});\nformattedScans.sort(function(a, b){return a[0]-b[0];});               \n\n\ndata = JSON.parse(context.global.checkins);              \nvar formattedCheckins = [];\ndata.data.forEach(function(item){                \n\tformattedCheckins.push([item.lastUpdate,1]);                   \t                \n});\nformattedCheckins.sort(function(a, b){return a[0]-b[0];});               \n\n\ndata = JSON.parse(context.global.shares);              \nvar formattedShares = [];\ndata.data.forEach(function(item){                \n\tformattedShares.push([item.lastUpdate,1]);                   \t                \n});\nformattedShares.sort(function(a, b){return a[0]-b[0];});               \n\n\ndata = JSON.parse(context.global.tocart);              \nvar formattedToCart = [];\ndata.data.forEach(function(item){                \n\tformattedToCart.push([item.lastUpdate,1]);                   \t                \n});\nformattedToCart.sort(function(a, b){return a[0]-b[0];});               \n\ndata = JSON.parse(context.global.likes);              \nvar formattedLikes = [];\ndata.data.forEach(function(item){                \n\tformattedLikes.push([item.lastUpdate,1]);                   \t                \n});\nformattedLikes.sort(function(a, b){return a[0]-b[0];});               \n\ndata = JSON.parse(context.global.dislikes);              \nvar formattedDislikes = [];\ndata.data.forEach(function(item){                \n\tformattedDislikes.push([item.lastUpdate,1]);                   \t                \n});\nformattedDislikes.sort(function(a, b){return a[0]-b[0];});               \n\n\nmsg.payload = {\n\t\"interactions\": {\n\t\t\"scans\": formattedScans,\n\t\t\"checkins\": formattedCheckins,\n\t\t\"shares\" : formattedShares,\n\t\t\"tocart\" : formattedToCart,\n\t\t\"likes\" : formattedLikes,\n\t\t\"dislikes\" : formattedDislikes\n\t}\n};\n\t\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 866.4839782714844,
+    "y": 821.4721927642822,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "52dc349d.ad23cc",
+        "e643bf98.19bc4"
+      ]
+    ]
+  },
+  {
+    "id": "6b7a2f4f.9485d",
+    "type": "function",
+    "name": "Save Scans",
+    "func": "context.global.scans = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 831.9284820556641,
+    "y": 197.25003814697266,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "70b1d25c.8f4e2c",
+        "e643bf98.19bc4"
+      ]
+    ]
+  },
+  {
+    "id": "8af004cc.750ff8",
+    "type": "function",
+    "name": "Save checkins",
+    "func": "context.global.checkins = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 832.9500274658203,
+    "y": 299.27142906188965,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "3782be9a.c87d42"
+      ]
+    ]
+  },
+  {
+    "id": "70b1d25c.8f4e2c",
+    "type": "function",
+    "name": "Get Check-ins",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/checkins\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 449.8636703491211,
+    "y": 300.6850929260254,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "3a6c3770.c593c8"
+      ]
+    ]
+  },
+  {
+    "id": "f8470a70.07b8f8",
+    "type": "function",
+    "name": "Save SOID",
+    "func": "context.global.soid = msg.payload.soid;\ncontext.global.token = msg.req.headers.authorization;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 461.11367416381836,
+    "y": 88.18508911132812,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "79ddd6da.862228"
+      ]
+    ]
+  },
+  {
+    "id": "3782be9a.c87d42",
+    "type": "function",
+    "name": "Get Shares",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/shares\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 444,
+    "y": 412,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "aa2ad30d.55d53"
+      ]
+    ]
+  },
+  {
+    "id": "aa2ad30d.55d53",
+    "type": "http request",
+    "name": "Shares History",
+    "method": "GET",
+    "url": "",
+    "x": 635,
+    "y": 409,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "a9514bd9.56aeb8"
+      ]
+    ]
+  },
+  {
+    "id": "a9514bd9.56aeb8",
+    "type": "function",
+    "name": "Save shares",
+    "func": "context.global.shares = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 838,
+    "y": 410,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "159ea30f.ea615d"
+      ]
+    ]
+  },
+  {
+    "id": "159ea30f.ea615d",
+    "type": "function",
+    "name": "Get To Cart",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/tocart\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 436.3333206176758,
+    "y": 517.6666040420532,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "ac797bf0.538688"
+      ]
+    ]
+  },
+  {
+    "id": "ac797bf0.538688",
+    "type": "http request",
+    "name": "To Cart History",
+    "method": "GET",
+    "url": "",
+    "x": 638.444465637207,
+    "y": 518.0000009536743,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "37f0316b.c80fce"
+      ]
+    ]
+  },
+  {
+    "id": "37f0316b.c80fce",
+    "type": "function",
+    "name": "Save To Cart",
+    "func": "context.global.tocart = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 844.7777557373047,
+    "y": 521.2221956253052,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "d893bacd.276c48"
+      ]
+    ]
+  },
+  {
+    "id": "d893bacd.276c48",
+    "type": "function",
+    "name": "Get Likes",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/likes\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 431.5555419921875,
+    "y": 616.3333129882812,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "508d09f5.af72f8"
+      ]
+    ]
+  },
+  {
+    "id": "508d09f5.af72f8",
+    "type": "http request",
+    "name": "Likes History",
+    "method": "GET",
+    "url": "",
+    "x": 633.6666870117188,
+    "y": 616.6667098999023,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "662b4edd.99d4b"
+      ]
+    ]
+  },
+  {
+    "id": "662b4edd.99d4b",
+    "type": "function",
+    "name": "Save Likes",
+    "func": "context.global.likes = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 855.555549621582,
+    "y": 617.6666975021362,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "bea3ae43.415c5"
+      ]
+    ]
+  },
+  {
+    "id": "bea3ae43.415c5",
+    "type": "function",
+    "name": "Get Dislikes",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/dislikes\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 434.8888626098633,
+    "y": 704.111083984375,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "982555f7.67daa8"
+      ]
+    ]
+  },
+  {
+    "id": "982555f7.67daa8",
+    "type": "http request",
+    "name": "Dislikes History",
+    "method": "GET",
+    "url": "",
+    "x": 651.4444351196289,
+    "y": 705.5555696487427,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "b258949c.4da768"
+      ]
+    ]
+  },
+  {
+    "id": "b258949c.4da768",
+    "type": "function",
+    "name": "Save Dislikes",
+    "func": "context.global.dislikes = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 869.9999694824219,
+    "y": 701.0000343322754,
+    "z": "b27eb30.f4d815",
+    "wires": [
+      [
+        "1e15079.fe1eaf8"
+      ]
+    ]
+  }
+]

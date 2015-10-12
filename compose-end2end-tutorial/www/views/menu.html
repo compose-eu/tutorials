@@ -1,0 +1,49 @@
+s<ion-header-bar align-title="center" class="bar-positive">
+    <button class="button" ng-click="back()">
+        <i class="icon ion-person"></i>
+    </button>
+    <h1 class="title">Enhanced Product Interaction</h1>
+</ion-header-bar>
+
+<ion-view view-title="Menu">
+    <ion-content>
+
+        <div class="list card">
+            <img src="img/logo.png" width="100%"/>
+        </div>
+
+        <div class="list card">
+            <div id="search-bar">
+                <div class="item item-input-inset">
+                    <label class="item-input-wrapper" id="search-input"> <i
+                            class="icon placeholder-icon"></i>
+                        <ion-autocomplete ng-model="data.categories"
+                                          multiple-select="true"
+                                          items-method="callbackMethod(query)"
+                                          select-items-label="Select categories..."
+                                          item-view-value-key="name"
+                                          item-value-key="name"
+                                          placeholder="Select categories..."/>
+                    </label>
+                    <button class="button button-small" ng-click="semanticSearch()">
+                        Search
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="list card">
+            <div ng-click="loadOffers()" class="row">
+                <div class="col col-center">
+                    <img src="img/offers.png" width="80%"/>
+                </div>
+                <div class="col col-75 col-center">
+                    <h2>Premium Offers</h2>
+                </div>
+            </div>
+        </div>
+
+    </ion-content>
+
+</ion-view>

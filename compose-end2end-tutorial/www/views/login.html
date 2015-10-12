@@ -1,0 +1,41 @@
+<ion-header-bar align-title="center" class="bar-positive">
+    <h1 class="title">COMPOSE Features Tutorial</h1>
+</ion-header-bar>
+
+<ion-view view-title="Login">
+
+    <ion-content>
+
+        <div class="list list-inset">
+            <label class="item">
+                <img src="img/logo.png" width="100%"/>
+            </label>
+        </div>
+
+        <form ng-controller="loginController" ng-submit="doLogin(username,password)">
+
+            <div class="list list-inset">
+
+                <label class="item item-input">
+                    <input type="text"
+                           placeholder="Username" ng-model="username">
+                </label>
+
+                <label class="item item-input">
+                    <input type="password"
+                           placeholder="Password" ng-model="password">
+                </label>
+
+                <label class="item">
+                    <button class="button button-block2 button-positive" type="submit">Log in
+                    </button>
+                </label>
+
+            </div>
+        </form>
+
+        <div class="list list-inset"></div>
+
+    </ion-content>
+
+</ion-view>

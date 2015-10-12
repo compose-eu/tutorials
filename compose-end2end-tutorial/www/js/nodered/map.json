@@ -1,0 +1,353 @@
+[
+  {
+    "id": "568aa9de.a97558",
+    "type": "http in",
+    "name": "Map Endpoint",
+    "url": "/map",
+    "method": "post",
+    "x": 272,
+    "y": 100,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "5ed1fe5a.a12e"
+      ]
+    ]
+  },
+  {
+    "id": "27bb0cf0.d844f4",
+    "type": "function",
+    "name": "Get Scans",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/scans\";\n \nreturn msg;",
+    "outputs": "1",
+    "valid": true,
+    "x": 507.9286117553711,
+    "y": 214.75003814697266,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "4c29ae43.b3d65"
+      ]
+    ]
+  },
+  {
+    "id": "4c29ae43.b3d65",
+    "type": "http request",
+    "name": "Scans History",
+    "method": "GET",
+    "url": "",
+    "x": 690.4285659790039,
+    "y": 214.0000081062317,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "bbf4af39.440b5"
+      ]
+    ]
+  },
+  {
+    "id": "fa8c30c7.0573d",
+    "type": "http request",
+    "name": "Checkins History",
+    "method": "GET",
+    "url": "",
+    "x": 690.1786041259766,
+    "y": 316.7500057220459,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "8b4e2d14.74b1d"
+      ]
+    ]
+  },
+  {
+    "id": "51b53ec.fae4ac",
+    "type": "debug",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 1226.9840087890625,
+    "y": 671.0555572509766,
+    "z": "dbabe47a.245418",
+    "wires": []
+  },
+  {
+    "id": "d8884750.2777b8",
+    "type": "http response",
+    "name": "",
+    "x": 1177.567611694336,
+    "y": 902.555585861206,
+    "z": "dbabe47a.245418",
+    "wires": []
+  },
+  {
+    "id": "3bd76f27.c4289",
+    "type": "function",
+    "name": "Merge Interactions",
+    "func": "var data = JSON.parse(context.global.scans);\nvar formattedScans = [];\ndata.data.forEach(function(item){\n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }\n\tformattedScans.push(value);                   \t                \n});\nformattedScans.sort(function(a, b){return a[0]-b[0];});               \n\ndata = JSON.parse(context.global.checkins);              \nvar formattedCheckins = [];\ndata.data.forEach(function(item){   \n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }             \n\tformattedCheckins.push(value);                   \t                \n});\nformattedCheckins.sort(function(a, b){return a[0]-b[0];});               \n\n\ndata = JSON.parse(context.global.shares);              \nvar formattedShares = [];\ndata.data.forEach(function(item){           \n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }     \n\tformattedShares.push(value);                   \t                \n});\nformattedShares.sort(function(a, b){return a[0]-b[0];});               \n\n\ndata = JSON.parse(context.global.tocart);              \nvar formattedToCart = [];\ndata.data.forEach(function(item){\n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }                \n\tformattedToCart.push(value);                   \t                \n});\nformattedToCart.sort(function(a, b){return a[0]-b[0];});               \n\ndata = JSON.parse(context.global.likes);              \nvar formattedLikes = [];\ndata.data.forEach(function(item){\n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }                \n\tformattedLikes.push(value);                   \t                \n});\nformattedLikes.sort(function(a, b){return a[0]-b[0];});               \n\ndata = JSON.parse(context.global.dislikes);              \nvar formattedDislikes = [];\ndata.data.forEach(function(item){   \n    var latitude = item.channels.location[\"current-value\"].split(',')[0];\n    var longitude = item.channels.location[\"current-value\"].split(',')[1];\n    var value = {\n     name: '',\n     lat: latitude,\n     lon: longitude\n    }             \n\tformattedDislikes.push(value);                   \t                \n});\nformattedDislikes.sort(function(a, b){return a[0]-b[0];});               \n\nmsg.payload = {\n\t\"map\": {\n\t\t\"scans\": formattedScans,\n\t\t\"checkins\": formattedCheckins,\n\t\t\"shares\" : formattedShares,\n\t\t\"tocart\" : formattedToCart,\n\t\t\"likes\" : formattedLikes,\n\t\t\"dislikes\" : formattedDislikes\n\t}\n};\n\t\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 921.4839782714844,
+    "y": 838.4721927642822,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "d8884750.2777b8",
+        "51b53ec.fae4ac"
+      ]
+    ]
+  },
+  {
+    "id": "bbf4af39.440b5",
+    "type": "function",
+    "name": "Save Scans",
+    "func": "context.global.scans = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 886.9284820556641,
+    "y": 214.25003814697266,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "6339200c.9cc6e"
+      ]
+    ]
+  },
+  {
+    "id": "8b4e2d14.74b1d",
+    "type": "function",
+    "name": "Save checkins",
+    "func": "context.global.checkins = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 887.9500274658203,
+    "y": 316.27142906188965,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "ff1a04fd.00e5f8"
+      ]
+    ]
+  },
+  {
+    "id": "6339200c.9cc6e",
+    "type": "function",
+    "name": "Get Check-ins",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/checkins\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 504.8636703491211,
+    "y": 317.6850929260254,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "fa8c30c7.0573d"
+      ]
+    ]
+  },
+  {
+    "id": "5ed1fe5a.a12e",
+    "type": "function",
+    "name": "Save SOID",
+    "func": "context.global.soid = msg.payload.soid;\ncontext.global.token = msg.req.headers.authorization;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 516.1136741638184,
+    "y": 105.18508911132812,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "27bb0cf0.d844f4"
+      ]
+    ]
+  },
+  {
+    "id": "ff1a04fd.00e5f8",
+    "type": "function",
+    "name": "Get Shares",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/shares\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 499,
+    "y": 429,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "d341eb40.2cbe18"
+      ]
+    ]
+  },
+  {
+    "id": "d341eb40.2cbe18",
+    "type": "http request",
+    "name": "Shares History",
+    "method": "GET",
+    "url": "",
+    "x": 690,
+    "y": 426,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "d21c8010.2de38"
+      ]
+    ]
+  },
+  {
+    "id": "d21c8010.2de38",
+    "type": "function",
+    "name": "Save shares",
+    "func": "context.global.shares = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 893,
+    "y": 427,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "2a260b44.d5d9f4"
+      ]
+    ]
+  },
+  {
+    "id": "2a260b44.d5d9f4",
+    "type": "function",
+    "name": "Get To Cart",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/tocart\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 491.3333206176758,
+    "y": 534.6666040420532,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "ba222722.45ddd8"
+      ]
+    ]
+  },
+  {
+    "id": "ba222722.45ddd8",
+    "type": "http request",
+    "name": "To Cart History",
+    "method": "GET",
+    "url": "",
+    "x": 693.444465637207,
+    "y": 535.0000009536743,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "5234334d.adcbcc"
+      ]
+    ]
+  },
+  {
+    "id": "5234334d.adcbcc",
+    "type": "function",
+    "name": "Save To Cart",
+    "func": "context.global.tocart = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 899.7777557373047,
+    "y": 538.2221956253052,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "bd8d70a8.42729"
+      ]
+    ]
+  },
+  {
+    "id": "bd8d70a8.42729",
+    "type": "function",
+    "name": "Get Likes",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/likes\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 486.5555419921875,
+    "y": 633.3333129882812,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "1733d1d8.e8cc2e"
+      ]
+    ]
+  },
+  {
+    "id": "1733d1d8.e8cc2e",
+    "type": "http request",
+    "name": "Likes History",
+    "method": "GET",
+    "url": "",
+    "x": 688.6666870117188,
+    "y": 633.6667098999023,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "1e10d124.e1ef2f"
+      ]
+    ]
+  },
+  {
+    "id": "1e10d124.e1ef2f",
+    "type": "function",
+    "name": "Save Likes",
+    "func": "context.global.likes = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 910.555549621582,
+    "y": 634.6666975021362,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "51427e23.aebd8"
+      ]
+    ]
+  },
+  {
+    "id": "51427e23.aebd8",
+    "type": "function",
+    "name": "Get Dislikes",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/dislikes\";\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 489.8888626098633,
+    "y": 721.111083984375,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "fea1e255.015e2"
+      ]
+    ]
+  },
+  {
+    "id": "fea1e255.015e2",
+    "type": "http request",
+    "name": "Dislikes History",
+    "method": "GET",
+    "url": "",
+    "x": 706.4444351196289,
+    "y": 722.5555696487427,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "8588ec04.7a771"
+      ]
+    ]
+  },
+  {
+    "id": "8588ec04.7a771",
+    "type": "function",
+    "name": "Save Dislikes",
+    "func": "context.global.dislikes = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 924.9999694824219,
+    "y": 718.0000343322754,
+    "z": "dbabe47a.245418",
+    "wires": [
+      [
+        "3bd76f27.c4289"
+      ]
+    ]
+  }
+]

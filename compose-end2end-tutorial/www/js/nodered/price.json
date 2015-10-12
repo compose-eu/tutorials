@@ -1,0 +1,118 @@
+[
+  {
+    "id": "63fe46d2.9c01b8",
+    "type": "http in",
+    "name": "Price Endpoint",
+    "url": "/price",
+    "method": "post",
+    "x": 204,
+    "y": 71,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "3e348258.c1cb7e"
+      ]
+    ]
+  },
+  {
+    "id": "972d5c3f.68d2a",
+    "type": "function",
+    "name": "Get Price",
+    "func": "msg.method = \"GET\";\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nmsg.url = \"http://api.servioticy.com:9090/\" + context.global.soid + \"/streams/price\";\n \nreturn msg;",
+    "outputs": "1",
+    "valid": true,
+    "x": 439.9286117553711,
+    "y": 185.75003814697266,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "5ed86dca.a12794"
+      ]
+    ]
+  },
+  {
+    "id": "5ed86dca.a12794",
+    "type": "http request",
+    "name": "Price History",
+    "method": "GET",
+    "url": "",
+    "x": 622.4285659790039,
+    "y": 185.0000081062317,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "aecd32a4.5132d"
+      ]
+    ]
+  },
+  {
+    "id": "fa67dbe3.059828",
+    "type": "debug",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "false",
+    "x": 1116.4840278625488,
+    "y": 275.8055534362793,
+    "z": "b8c33725.473cc8",
+    "wires": []
+  },
+  {
+    "id": "dc591e09.23a6e",
+    "type": "http response",
+    "name": "",
+    "x": 1110.8176460266113,
+    "y": 462.3056173324585,
+    "z": "b8c33725.473cc8",
+    "wires": []
+  },
+  {
+    "id": "4921ddbb.b6de24",
+    "type": "function",
+    "name": "Format price",
+    "func": "var data = JSON.parse(context.global.price);\nvar formattedPrice = [];\ndata.data.forEach(function(item){                \n\tformattedPrice.push([item.lastUpdate,item.channels.value[\"current-value\"]]);                   \t                \n});\nformattedPrice.sort(function(a, b){return a[0]-b[0];});               \n\nmsg.payload = {\n\t\"price\": formattedPrice\n};\n\t\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 803.4839553833008,
+    "y": 351.97217559814453,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "dc591e09.23a6e",
+        "fa67dbe3.059828"
+      ]
+    ]
+  },
+  {
+    "id": "aecd32a4.5132d",
+    "type": "function",
+    "name": "Save Price",
+    "func": "context.global.price = msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 818.9284820556641,
+    "y": 185.25003814697266,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "4921ddbb.b6de24"
+      ]
+    ]
+  },
+  {
+    "id": "3e348258.c1cb7e",
+    "type": "function",
+    "name": "Save SOID",
+    "func": "context.global.soid = msg.payload.soid;\ncontext.global.token = msg.req.headers.authorization;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 448.11367416381836,
+    "y": 76.18508911132812,
+    "z": "b8c33725.473cc8",
+    "wires": [
+      [
+        "972d5c3f.68d2a"
+      ]
+    ]
+  }
+]

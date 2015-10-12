@@ -1,0 +1,145 @@
+<ion-header-bar align-title="center" class="bar-positive">
+    <button class="button" ng-click="back()">
+        <i class="icon ion-arrow-left-a"></i>
+    </button>
+    <h1 class="title">Product Information</h1>
+</ion-header-bar>
+
+<ion-view view-title="Product">
+    <ion-content>
+
+        <div class="list card cardpadding">
+
+            <div class="item item-text-wrap headerpadding"
+                 style="background-color: #f5f5f5;" href="#">
+                <div class="row row-center">
+                    <div class="col col-75">
+                        <h3 alt="N.A.">
+                            <b>{{product.name}}</b>
+                        </h3>
+                        <h4>{{product.brand}}</h4>
+                    </div>
+                    <div class="col text-right">
+                        <b>{{product.price}} €</b>
+                    </div>
+                </div>
+            </div>
+
+            <ion-slide-box on-slide-changed="slideHasChanged($index)">
+
+                <ion-slide>
+                    <div class="item item-body imagepadding">
+                        <img class="full-image"
+                             style="display: block; margin-left: auto; margin-right: auto; width: auto; height: 165px"
+                             src="{{product.image}}">
+
+                        <div>
+                            <p>{{product.description}}</p>
+                        </div>
+                    </div>
+                </ion-slide>
+                <ion-slide>
+                    <section style="width: 90%" class="performance-facts">
+                        <header class="performance-facts__header">
+                            <h1 class="performance-facts__title">Nutrition Facts</h1>
+                        </header>
+                        <table class="performance-facts__table">
+                            <tbody>
+                            <tr>
+                                <th colspan="2" align="center"><b>Fat</b></th>
+                                <td>{{product.fat}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="center">Saturated Fat</th>
+                                <td>{{product.saturatedFat}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="center"><b>Carbohydrate</b></th>
+                                <td>{{product.carbs}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="center">Sugars</th>
+                                <td>{{product.sugar}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" align="center"><b>Protein</b></th>
+                                <td>{{product.protein}}</td>
+                            </tr>
+                            <tr class="thick-end">
+                                <th colspan="2" align="center"><b>Sodium</b></th>
+                                <td>{{product.salt}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="performance-facts__table--grid">
+                            <tbody>
+                            <tr>
+                            </tr>
+                            <tr class="thin-end">
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="performance-facts__table--small small-info">
+                            <thead>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </section>
+                </ion-slide>
+                <ion-slide>
+
+                    <div class="item item-body">
+                        <highchart id="chart1" config="interactionChartConfig"></highchart>
+
+                    </div>
+
+                </ion-slide>
+                <ion-slide>
+                    <div class="item item-body">
+                        <highchart id="chart2" config="priceChartConfig"></highchart>
+                    </div>
+                </ion-slide>
+            </ion-slide-box>
+
+            <div class="item tabs tabs-secondary">
+                <rating align="center" ng-model="stars" max="5"></rating>
+            </div>
+
+            <div class="item tabs tabs-secondary">
+                <div class="sentiment-center">
+                    <a href="#" class="subdued">{{product.likes}}<i
+                            class="icon ion-happy-outline sentiment"></i></a> <a href="#"
+                                                                                 class="subdued">{{product.dislikes}}<i
+                        class="icon ion-sad-outline sentiment"></i></a>
+                </div>
+            </div>
+
+            <div class="item tabs tabs-secondary tabs-icon-left item-divider">
+                <a ng-disabled="isLikeDisabled" ng-click="like()" class="tab-item" href="#"> <i
+                        class="icon ion-thumbsup"></i>
+                    Like
+                </a>
+                <a ng-disabled="isDislikeDisabled" ng-click="dislike()" class="tab-item" href="#"> <i
+                        class="icon ion-thumbsdown"></i>
+                    Dislike
+                </a>
+                <a ng-disabled="isCheckinDisabled" ng-click="checkin()" class="tab-item" href="#"> <i
+                        class="icon ion-android-checkbox-outline"></i> Check-in
+                </a>
+                <a ng-disabled="isShareDisabled" ng-click="share()" class="tab-item" href="#"> <i
+                        class="icon ion-share"></i>
+                    Share
+                </a>
+                <a ng-disabled="isTocartDisabled" ng-click="tocart()" class="tab-item" href="#"> <i
+                        class="icon ion-android-cart"></i>To
+                    cart
+                </a>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-view>

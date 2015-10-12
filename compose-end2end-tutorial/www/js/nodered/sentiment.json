@@ -1,0 +1,165 @@
+[
+  {
+    "id": "2030f1a6.dfcf0e",
+    "type": "http in",
+    "name": "Sentiment Endpoint",
+    "url": "/sentiment",
+    "method": "post",
+    "x": 138,
+    "y": 77,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "f84a8c2c.07b57"
+      ]
+    ]
+  },
+  {
+    "id": "6c40179.f93bfe8",
+    "type": "debug",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "false",
+    "x": 1023.53955078125,
+    "y": 520.611083984375,
+    "z": "41f0eab1.be0f14",
+    "wires": []
+  },
+  {
+    "id": "891332f2.76ecd",
+    "type": "http response",
+    "name": "",
+    "x": 1006.6787109375,
+    "y": 405.8889350891113,
+    "z": "41f0eab1.be0f14",
+    "wires": []
+  },
+  {
+    "id": "1a060617.e5f9fa",
+    "type": "function",
+    "name": "Merge Sentiment and Reputation",
+    "func": "var reputation = -1;\nif (JSON.parse(context.global.reputation).errorMessage === undefined){\n    reputation = JSON.parse(context.global.reputation)[0].attributes[0].feedback;\n}\n\nvar interactions = JSON.parse(context.global.interactions);\n\nvar totalCheckins =interactions.interactions.checkins.length;\nvar totalShares = interactions.interactions.shares.length;\nvar totalTocart = interactions.interactions.tocart.length;\nvar totalLikes = interactions.interactions.likes.length;\nvar totalDislikes = interactions.interactions.dislikes.length;\n\nvar stars = 0;\n\nif (reputation.value != -1)\n\tstars = (reputation*5)/10;\n\t\nmsg.payload = {\n\t\"sentiment\":{\n\t\t\"data\": {\n\t  \t\t\"reputation\" : reputation,\n\t  \t\t\"likes\": totalLikes,\n\t  \t\t\"dislikes\" : totalDislikes\n\t\t},\n\t\t\"stars\": stars\t\t\n\t},\n\t\"interactions\":{\n\t\t\"data\": [ \n\t\t\t[\"Check-ins\", totalCheckins],\n\t\t\t[\"Shares\", totalShares],\n\t\t\t[\"ToCart\", totalTocart]\n\t\t]\n\t}\n};\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 697.928466796875,
+    "y": 407.1388740539551,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "891332f2.76ecd",
+        "6c40179.f93bfe8"
+      ]
+    ]
+  },
+  {
+    "id": "f84a8c2c.07b57",
+    "type": "function",
+    "name": "Save SOID",
+    "func": "context.global.soid = msg.payload.soid;\ncontext.global.token = msg.req.headers.authorization;\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 336.1136779785156,
+    "y": 76.07396697998047,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "55345355.aacbac"
+      ]
+    ]
+  },
+  {
+    "id": "f2f4417b.0d0bc",
+    "type": "function",
+    "name": "Get Reputation",
+    "func": "msg.method = \"POST\";\n\nmsg.url = \"http://132.231.11.217:8080/popularioty-api/class_reputation/batch/\";\nmsg.payload = {\n    \"entities\":[\n        {\n        \t\"entity_id\": context.global.soid,\n        \t\"entity_type\":\"service_object\"\n        }\n    ],\n    \"attributes\":[\n        {\n            \"reputation_type\":\"feedback\",\n            \"values\":[\"value\",\"total_count\"]\n            \n        }\n    ]\n}\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 449,
+    "y": 280.8888854980469,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "61265a85.9ed9a4"
+      ]
+    ]
+  },
+  {
+    "id": "61265a85.9ed9a4",
+    "type": "http request",
+    "name": "Reputation Manager",
+    "method": "POST",
+    "url": "",
+    "x": 676,
+    "y": 281.8888854980469,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "652b157d.9ad4ec"
+      ]
+    ]
+  },
+  {
+    "id": "652b157d.9ad4ec",
+    "type": "function",
+    "name": "Save Reputation",
+    "func": "//TODO parse reputation\ncontext.global.reputation = msg.payload;\n\nreturn msg;\n",
+    "outputs": 1,
+    "valid": true,
+    "x": 912,
+    "y": 282.8888854980469,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "1a060617.e5f9fa"
+      ]
+    ]
+  },
+  {
+    "id": "55345355.aacbac",
+    "type": "function",
+    "name": "Get Interactions",
+    "func": "msg.method = \"POST\";\nmsg.url = \"http://f4a537501fad4cadba2b8ea23ef4a186.147.83.30.133.xip.io/api/interactions\";\nmsg.payload = {\n    soid: context.global.soid\n}\nmsg.headers = {\n\tAuthorization : context.global.token\n}\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 452,
+    "y": 172.8888702392578,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "f02d09fc.0fd2f8"
+      ]
+    ]
+  },
+  {
+    "id": "f02d09fc.0fd2f8",
+    "type": "http request",
+    "name": "",
+    "method": "POST",
+    "url": "",
+    "x": 678,
+    "y": 174.8888702392578,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "98c6075e.6739f8"
+      ]
+    ]
+  },
+  {
+    "id": "98c6075e.6739f8",
+    "type": "function",
+    "name": "Save Interactions",
+    "func": "context.global.interactions = msg.payload;\n\nreturn msg;",
+    "outputs": 1,
+    "valid": true,
+    "x": 917,
+    "y": 170.8888702392578,
+    "z": "41f0eab1.be0f14",
+    "wires": [
+      [
+        "f2f4417b.0d0bc"
+      ]
+    ]
+  }
+]
